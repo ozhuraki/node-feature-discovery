@@ -18,6 +18,7 @@ package vendor
 
 import (
 	"os"
+	"strings"
 
 	"k8s.io/klog/v2"
 
@@ -95,12 +96,16 @@ func (s *vendorSource) GetFeatures() *nfdv1alpha1.Features {
 
 // Read /sys/devices/virtual/dmi/id/sys_vendor
 func getVendor() (string, error) {
-	vendor, err := os.ReadFile("/sys/devices/virtual/dmi/id/sys_vendor")
+	raw, err := os.ReadFile("/sys/devices/virtual/dmi/id/sys_vendor")
 	if err != nil {
 		return "", err
 	}
 
-	return string(vendor), nil
+	vendor := strings.Split(string(raw), " ")
+
+	klog.V(3).InfoS("discovered features", "featureSource", "vendor", "raw", string(raw))
+
+	return vendor[0], nil
 }
 
 func init() {
