@@ -76,6 +76,7 @@ func (s *vendorSource) Discover() error {
 	if err != nil {
 		klog.ErrorS(err, "failed to get vendor")
 	} else {
+		s.features.Attributes[VendorFeature] = nfdv1alpha1.NewAttributeFeatures(nil)
 		s.features.Attributes[VendorFeature].Elements["name"] = vendor
 	}
 
