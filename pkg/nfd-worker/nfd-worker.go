@@ -62,6 +62,7 @@ import (
 	_ "sigs.k8s.io/node-feature-discovery/source/storage"
 	_ "sigs.k8s.io/node-feature-discovery/source/system"
 	_ "sigs.k8s.io/node-feature-discovery/source/usb"
+	_ "sigs.k8s.io/node-feature-discovery/source/vendor"
 )
 
 // NfdWorker is the interface for nfd-worker daemon

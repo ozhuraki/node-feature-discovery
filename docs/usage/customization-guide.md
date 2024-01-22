@@ -976,6 +976,8 @@ The following features are available for matching:
 |                  |              | **`<sysfs-attribute>`** | string | Sysfs network interface attribute, available attributes: `dax`, `rotational`, `nr_zones`, `zoned` |
 | **`system.osrelease`** | attribute |       |            | System identification data from `/etc/os-release` |
 |                  |              | **`<parameter>`** | string | One parameter from `/etc/os-release` |
+| **`system.vendor`** | attribute |       |            | Sytem vendor identification data from `/sys/devices/virtual/dmi/id/sys_vendor` |
+|                  |              | **`<parameter>`** | string | One parameter from `/sys/devices/virtual/dmi/id/sys_vendor` |
 | **`system.name`** | attribute   |          |            | System name information |
 |                  |              | **`nodename`** | string | Name of the kubernetes node object |
 | **`usb.device`** | instance     |          |            | USB devices present in the system |
