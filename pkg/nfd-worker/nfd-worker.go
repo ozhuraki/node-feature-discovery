@@ -762,10 +762,14 @@ func (m *nfdWorker) updateNodeFeatureObject(labels Labels) error {
 		nfrUpdated.Labels = map[string]string{nfdv1alpha1.NodeFeatureObjNodeNameLabel: nodename}
 		nfrUpdated.OwnerReferences = ownerRefs
 		nfrUpdated.Spec = nfdv1alpha1.NodeFeatureSpec{
-			Features: *features,
+ 			Features: *features,
 			Labels:   labels,
 		}
-
+		currentTime := time.Now()
+		msg := fmt.Sprintf("Updated: %q", currentTime)
+		nfrUpdated.Status = nfdv1alpha1.NodeFeatureStatus{
+			Status: msg,
+		}
 		if !apiequality.Semantic.DeepEqual(nfr, nfrUpdated) {
 			klog.InfoS("updating NodeFeature object", "nodefeature", klog.KObj(nfr))
 			nfrUpdated, err = cli.NfdV1alpha1().NodeFeatures(namespace).Update(context.TODO(), nfrUpdated, metav1.UpdateOptions{})
