@@ -109,8 +109,16 @@ spec:
                   be created.
                 type: object
             type: object
+          status:
+            description: Status of a NodeFeature object.
+            properties:
+              status:
+                description: Status of CRD.
+                type: string
+            type: object
         required:
         - spec
+        - status
         type: object
     served: true
     storage: true
