@@ -153,6 +153,7 @@ type nfdMaster struct {
 	configFilePath string
 	server         *grpc.Server
 	healthServer   *grpc.Server
+	healthcheck    *health.Server
 	stop           chan struct{}
 	ready          chan struct{}
 	kubeconfig     *restclient.Config
@@ -385,8 +386,10 @@ func (m *nfdMaster) Run() error {
 			if m.args.CrdController {
 				err := m.startNfdApiController()
 				if err != nil {
+					m.healthcheck.SetServingStatus("", grpc_health_v1.HealthCheckResponse_NOT_SERVING)
 					return nil
 				}
+				m.healthcheck.SetServingStatus("", grpc_health_v1.HealthCheckResponse_SERVING)
 			}
 			// Restart the updaterPool
 			m.updaterPool.start(m.config.NfdApiParallelism)
@@ -413,7 +416,8 @@ func (m *nfdMaster) startGrpcHealthServer(errChan chan<- error) error {
 	}
 
 	s := grpc.NewServer()
-	grpc_health_v1.RegisterHealthServer(s, health.NewServer())
+	m.healthcheck = health.NewServer()
+	grpc_health_v1.RegisterHealthServer(s, m.healthcheck)
 	klog.InfoS("gRPC health server serving", "port", m.args.GrpcHealthPort)
 
 	go func() {
