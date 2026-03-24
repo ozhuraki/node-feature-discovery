@@ -92,3 +92,39 @@ func ValidateNFR(filepath string) []error {
 
 	return validationErr
 }
+
+// Given a file path, read the file and check if is a valid NodeFeatureGroup file
+func ValidateNFG(filepath string) []error {
+	var err error
+	var validationErr []error
+
+	file, err := os.ReadFile(filepath)
+	if err != nil {
+		return []error{fmt.Errorf("error reading NodeFeatureGroup file: %w", err)}
+	}
+
+	nfg := nfdv1alpha1.NodeFeatureGroup{}
+	err = yaml.Unmarshal(file, &nfg)
+	if err != nil {
+		return []error{fmt.Errorf("error reading NodeFeatureGroup file: %w", err)}
+	}
+
+	for _, rule := range nfg.Spec.Rules {
+		fmt.Println("Validating rule: ", rule.Name)
+		// Validate Rule Name
+		if rule.Name == "" {
+			validationErr = append(validationErr, fmt.Errorf("rule name cannot be empty"))
+		}
+
+		// Validate VarsTemplate
+		validationErr = append(validationErr, validate.Template(rule.VarsTemplate)...)
+
+		// Validate matchFeatures
+		validationErr = append(validationErr, validate.MatchFeatures(rule.MatchFeatures)...)
+
+		// Validate matchAny
+		validationErr = append(validationErr, validate.MatchAny(rule.MatchAny)...)
+	}
+
+	return validationErr
+}

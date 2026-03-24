@@ -26,6 +26,8 @@ import (
 var (
 	// Path to the NodeFeatureRule file to validate
 	nodefeaturerule string
+	// Path to the NodeFeatureGroup file to validate
+	nodefeaturegroup string
 	// Path to the NodeFeature file to run against the NodeFeatureRule
 	nodefeature string
 	// Node to validate against
@@ -39,7 +41,7 @@ var RootCmd = &cobra.Command{
 	Use:   "kubectl-nfd",
 	Short: "NFD kubectl plugin",
 	Long: `kubectl plugin for NFD
-	Debug tool to validate/dryrun/test NodeFeatureRules
+	Debug tool to validate/dryrun/test NodeFeatureRules, NodeFeatureGroups
 	for more information see: 
 	https://kubernetes-sigs.github.io/node-feature-discovery/v0.14/usage/customization-guide.html#nodefeaturerule-custom-resource`,
 }

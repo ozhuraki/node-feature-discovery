@@ -43,6 +43,25 @@ var validateCmd = &cobra.Command{
 	},
 }
 
+var validateGroupCmd = &cobra.Command{
+	Use:   "validate",
+	Short: "Validate a NodeFeatureGroup file",
+	Long:  `Validate a NodeFeatureGroup file to ensure it is valid before applying it to a cluster`,
+	Run: func(cmd *cobra.Command, args []string) {
+		fmt.Printf("Validating NodeFeatureGroup %s\n", nodefeaturegroup)
+		err := kubectlnfd.ValidateNFG(nodefeaturegroup)
+		if len(err) > 0 {
+			fmt.Printf("NodeFeatureGroup %s is not valid\n", nodefeaturegroup)
+			for _, e := range err {
+				cmd.PrintErrln(e)
+			}
+			// Return non-zero exit code to indicate failure
+			os.Exit(1)
+		}
+		fmt.Printf("NodeFeatureGroup %s is valid\n", nodefeaturegroup)
+	},
+}
+
 func init() {
 	RootCmd.AddCommand(validateCmd)
 
@@ -51,4 +70,13 @@ func init() {
 	if err != nil {
 		panic(err)
 	}
+
+	RootCmd.AddCommand(validateGroupCmd)
+
+	validateGroupCmd.Flags().StringVarP(&nodefeaturegroup, "nodefeaturegroup-file", "f", "", "Path to the NodeFeatureGroup file to validate")
+	err = validateGroupCmd.MarkFlagRequired("nodefeaturegroup-file")
+	if err != nil {
+		panic(err)
+	}
 }
+
